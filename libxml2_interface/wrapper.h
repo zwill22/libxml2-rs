@@ -5,8 +5,7 @@
 extern "C" {
 #endif
 
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
+#include <libxml2/libxml/xmlreader.h>
 
 #ifdef _cplusplus
 }
