@@ -1,4 +1,4 @@
-name: Test interface
+name: Test Rust
 
 on:
   push:
