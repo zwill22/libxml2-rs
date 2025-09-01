@@ -11,9 +11,10 @@ mod tests {
         xmlSchemaFreeParserCtxt, xmlSchemaNewParserCtxt, xmlSchemaParse, xmlSchemaParserCtxtPtr,
         xmlSchemaPtr, xmlSchemaSetParserStructuredErrors,
     };
+    use ctor::{ctor, dtor};
+    use serial_test::serial;
     use std::ffi::{CStr, CString, c_void};
     use std::path::Path;
-    use ctor::{ctor, dtor};
     use workspace_root::get_workspace_root;
 
     struct ValidationErrors {
@@ -93,7 +94,6 @@ mod tests {
     }
 
     fn validate_xsd_schema(schema_file: &Path) -> Result<(), Vec<String>> {
-
         let mut error_context = ValidationErrors { errors: Vec::new() };
 
         let result: Result<(), Vec<String>> = (|| {
@@ -140,6 +140,7 @@ mod tests {
         }
     }
 
+    #[serial]
     #[test]
     fn test_xsd() {
         let root = get_workspace_root();
@@ -150,6 +151,7 @@ mod tests {
         assert!(result.is_ok());
     }
 
+    #[serial]
     #[test]
     fn test_invalid_xsd() {
         let root = get_workspace_root();
