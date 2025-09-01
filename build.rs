@@ -8,7 +8,7 @@ fn main() {
         .build();
 
     println!("cargo:rustc-link-search=native={:?}", path);
-    println!("cargo:rustc-link-lib=static=xml2");
+    println!("cargo:rustc-link-lib=xml2");
 
     let builder = bindgen::builder()
         .header("libxml2_interface/wrapper.h")
