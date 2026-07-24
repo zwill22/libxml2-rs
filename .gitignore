@@ -2,3 +2,4 @@ target/
 cmake-build-*
 .idea/
 Cargo.lock
+.DS_Store
