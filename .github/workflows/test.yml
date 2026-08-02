@@ -21,21 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Dependencies (Ubuntu)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Install libxml2 (Windows)
+        if: contains(matrix.os, 'windows')
         run: |
-          sudo apt update
-          sudo apt install -y clang libxml2 libxml2-dev libxslt1-dev cmake
-
-      - name: Check Rust
-        if: ${{ env.ACT }}
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          cache: false
-
-      - name: Setup Rust
-        if: ${{ !env.ACT }}
-        run: rustup update
+          vcpkg install libxml2
+          vcpkg integrate install
+          echo "CMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
+          Get-ChildItem -Include parser.h -File -Recurse
+          Get-ChildItem env:
 
       - name: Build
         run: cargo build --verbose
