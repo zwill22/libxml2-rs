@@ -21,16 +21,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup vcpkg libxml2 Cache
+        if: contains(matrix.os, 'windows')
+        uses: actions/cache@v4
+        id: vcpkg-cache
+        with:
+          path: C:\vcpkg
+          key: vcpkg-libxml2
+
       - name: Install libxml2 (Windows)
         if: contains(matrix.os, 'windows')
         shell: pwsh
-        run: .\.github\workflows\setup_libxml2.ps1
+        run:
+          vcpkg install libxml2
+          vcpkg integrate install
+
+
+      - name: Setup environment (Windows)
+        if: contains(matrix.os, 'windows')
+        shell: pwsh
+        run: .\.github\workflows\windows_env.ps1
 
       - name: Check env
         if: contains(matrix.os, 'windows')
         shell: pwsh
         run: |
-          Get-ChildItem Env: | Format-List *
+          Get-ChildItem Env:
 
       - name: Build
         run: cargo build --verbose
