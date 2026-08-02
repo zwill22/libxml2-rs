@@ -29,7 +29,8 @@ jobs:
       - name: Check env
         if: contains(matrix.os, 'windows')
         shell: pwsh
-        run: Get-ChildItem env:
+        run: |
+          Get-ChildItem Env: | Format-List *
 
       - name: Build
         run: cargo build --verbose
