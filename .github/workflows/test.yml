@@ -32,7 +32,7 @@ jobs:
       - name: Install libxml2 (Windows)
         if: contains(matrix.os, 'windows')
         shell: pwsh
-        run:
+        run: |
           vcpkg install libxml2
           vcpkg integrate install
 
