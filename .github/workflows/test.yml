@@ -23,12 +23,8 @@ jobs:
 
       - name: Install libxml2 (Windows)
         if: contains(matrix.os, 'windows')
-        run: |
-          vcpkg install libxml2
-          vcpkg integrate install
-          echo "CMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
-          Get-ChildItem -Include parser.h -File -Recurse
-          Get-ChildItem env:
+        shell: pwsh
+        run: .\.github\workflows\setup_libxml2.ps1
 
       - name: Build
         run: cargo build --verbose
