@@ -13,10 +13,11 @@ if (-Not ($osPlatform.Contains("Windows"))) {
   exit 1;
 }
 
+$directory = "${architecture.toLower()}-windows"
+
 vcpkg install libxml2
 vcpkg integrate install
 
 echo "CMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
-echo "PC_LIBXML_INCLUDE_DIRS=C:/vcpkg/"
-Get-ChildItem -Include parser.h -File -Recurse
+echo "PC_LIBXML_INCLUDE_DIRS=C:/vcpkg/$directory/include/libxml2" >> $env:GITHUB_ENV
 Get-ChildItem env:

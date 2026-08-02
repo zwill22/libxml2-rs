@@ -26,6 +26,11 @@ jobs:
         shell: pwsh
         run: .\.github\workflows\setup_libxml2.ps1
 
+      - name: Check env
+        if: contains(matrix.os, 'windows')
+        shell: pwsh
+        run: Get-ChildItem env:
+
       - name: Build
         run: cargo build --verbose
 
