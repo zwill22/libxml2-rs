@@ -7,13 +7,13 @@ include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 #[cfg(test)]
 mod tests {
     use crate::{
-        xmlCleanupParser, xmlErrorPtr, xmlInitParser, xmlSchemaCleanupTypes, xmlSchemaFree,
+        xmlCleanupParser, xmlError, xmlInitParser, xmlSchemaCleanupTypes, xmlSchemaFree,
         xmlSchemaFreeParserCtxt, xmlSchemaNewParserCtxt, xmlSchemaParse, xmlSchemaParserCtxtPtr,
         xmlSchemaPtr, xmlSchemaSetParserStructuredErrors,
     };
     use ctor::{ctor, dtor};
     use serial_test::serial;
-    use std::ffi::{CStr, CString, c_void};
+    use std::ffi::{c_void, CStr, CString};
     use std::path::Path;
     use workspace_root::get_workspace_root;
 
@@ -21,7 +21,7 @@ mod tests {
         errors: Vec<String>,
     }
 
-    extern "C" fn structured_error_handler(user_data: *mut c_void, error: xmlErrorPtr) {
+    unsafe extern "C" fn structured_error_handler(user_data: *mut c_void, error: *mut xmlError) {
         if error.is_null() {
             return;
         }
@@ -119,7 +119,7 @@ mod tests {
                 ]);
             }
 
-            // Wrap the raw pointer in our RAII guard to ensure it's freed.
+            // Wrap the raw pointer in a guard to ensure it's freed.
             let _schema = Schema(schema_ptr);
 
             // If the schema was parsed but we collected errors, it's still a failure.
