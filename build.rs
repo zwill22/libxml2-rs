@@ -5,16 +5,14 @@ use std::path::{Path, PathBuf};
 fn fetch_lib_path() -> Option<String> {
     if let Ok(lib_path) = env::var("LIBXML2_INCLUDE_DIR") {
         if Path::new(&lib_path).exists() {
-            println!("cargo:warning=Using LIBXML2_INCLUDE_DIR= {}", lib_path);
             return Some(lib_path.to_string());
         }
     }
 
-
     let lib_path = "/usr/include/libxml2";
     if Path::new(lib_path).exists() {
-        return Some(lib_path.to_string())
-    } 
+        return Some(lib_path.to_string());
+    }
 
     None
 }
@@ -46,12 +44,11 @@ fn main() {
         .parse_callbacks(Box::new(callbacks));
 
     let bindings = match fetch_lib_path() {
-        Some(lib_path) => builder.clang_arg(format!("-I{}", lib_path)).generate(),
-        None => builder.generate(),
+        Some(lib_path) => builder.clang_arg(format!("-I{}", lib_path)),
+        None => builder,
     }
+    .generate()
     .expect("Unable to generate bindings");
-
-    println!("cargo:warning=Bindings-generated");
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());

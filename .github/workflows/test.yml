@@ -39,15 +39,10 @@ jobs:
 
       - name: Setup environment (Windows)
         if: contains(matrix.os, 'windows')
-        shell: pwsh
-        run: .\.github\workflows\windows_env.ps1
-
-      - name: Check env
-        if: contains(matrix.os, 'windows')
-        shell: pwsh
         run: |
-          Get-ChildItem Env:
-
+          echo "CMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
+          echo "LIBXML2_INCLUDE_DIR=C:\vcpkg\installed\x64-windows\include\libxml2\" >> $env:GITHUB_ENV
+   
       - name: Build
         run: cargo build --verbose
 
