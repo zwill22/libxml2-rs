@@ -2,7 +2,16 @@ use cmake::Config;
 use std::env;
 use std::path::{Path, PathBuf};
 
-fn fetch_lib_path() -> Option<String> {
+
+fn fetch_library_path() -> Option<String> {
+    if let Ok(lib_path) = env::var("LIBXML2_LIBRARY_DIR") && Path::new(&lib_path).exists() {
+            return Some(lib_path.to_string());
+    }
+
+    None
+}
+
+fn fetch_include_path() -> Option<String> {
     if let Ok(lib_path) = env::var("LIBXML2_INCLUDE_DIR") && Path::new(&lib_path).exists() {
             return Some(lib_path.to_string());
     }
@@ -30,10 +39,19 @@ fn generate_config() -> Config {
 }
 
 fn main() {
-    let path = generate_config().build();
+    let path = generate_config().build(); 
 
     println!("cargo:rustc-link-search=native={:?}", path);
+    if let Some(lib_path) = fetch_library_path() {
+        println!("cargo:rustc-link-search={}", lib_path);
+    }
+
+    
+    #[cfg(not(target_os = "windows"))]
     println!("cargo:rustc-link-lib=xml2");
+    #[cfg(target_os =  "windows")]
+    println!("cargo:rustc-link-lib=libxml2");
+    
 
     let callbacks = bindgen::CargoCallbacks::new();
 
@@ -41,7 +59,7 @@ fn main() {
         .header("libxml2_interface/wrapper.h")
         .parse_callbacks(Box::new(callbacks));
 
-    let bindings = match fetch_lib_path() {
+    let bindings = match fetch_include_path() {
         Some(lib_path) => builder.clang_arg(format!("-I{}", lib_path)),
         None => builder,
     }

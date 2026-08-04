@@ -21,7 +21,11 @@ mod tests {
         errors: Vec<String>,
     }
 
-    unsafe extern "C" fn structured_error_handler(user_data: *mut c_void, error: *mut xmlError) {
+    unsafe extern "C" fn structured_error_handler(
+        user_data: *mut c_void,
+        #[cfg(not(target_os = "windows"))] error: *mut xmlError,
+        #[cfg(target_os = "windows")] error: *const xmlError,
+    ) {
         if error.is_null() {
             return;
         }
