@@ -3,10 +3,8 @@ use std::env;
 use std::path::{Path, PathBuf};
 
 fn fetch_lib_path() -> Option<String> {
-    if let Ok(lib_path) = env::var("LIBXML2_INCLUDE_DIR") {
-        if Path::new(&lib_path).exists() {
+    if let Ok(lib_path) = env::var("LIBXML2_INCLUDE_DIR") && Path::new(&lib_path).exists() {
             return Some(lib_path.to_string());
-        }
     }
 
     let lib_path = "/usr/include/libxml2";
